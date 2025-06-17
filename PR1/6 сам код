@@ -1,0 +1,49 @@
+import java.util.Scanner;
+
+public class MemoryCell {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] memory = new int[3];
+        int count = 0;
+        
+        while (true) {
+            System.out.println("Введите число (или 't' для выхода):");
+            String input = scanner.next();
+            
+            if (input.equals("t")) {
+                break;
+            }
+            
+            try {
+                int number = Integer.parseInt(input);
+                
+                if (count < 3) {
+                    memory[count] = number;
+                    count++;
+                } else {
+                    int minIndex = 0;
+                    for (int i = 1; i < 3; i++) {
+                        if (memory[i] < memory[minIndex]) {
+                            minIndex = i;
+                        }
+                    }
+                    memory[minIndex] = number;
+                }
+                
+                System.out.print("Текущая память: [");
+                for (int i = 0; i < count; i++) {
+                    System.out.print(memory[i]);
+                    if (i < count - 1) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.println("]");
+                
+            } catch (NumberFormatException e) {
+                System.out.println("Пожалуйста, введите число или 't' для выхода");
+            }
+        }
+        
+        scanner.close();
+    }
+}
