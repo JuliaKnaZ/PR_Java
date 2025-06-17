@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+public class NumberSquares {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Введите первое число:");
+        int num1 = scanner.nextInt();
+        
+        System.out.println("Введите второе число:");
+        int num2 = scanner.nextInt();
+        
+        int start = Math.min(num1, num2);
+        int end = Math.max(num1, num2);
+        
+        System.out.println("Квадраты чисел от " + start + " до " + end + ":");
+        
+        for (int i = start; i <= end; i += start) {
+            int square = i * i;
+            System.out.print(square);
+            
+            if (i + start <= end) {
+                System.out.print(", ");
+            }
+        }
+        
+        scanner.close();
+    }
+}
