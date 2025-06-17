@@ -1,0 +1,41 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        String[] parts = line.split(" ");
+        
+        int[] weights = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            weights[i] = Integer.parseInt(parts[i]);
+        }
+        
+        for (int i = 0; i < weights.length - 1; i++) {
+            for (int j = i + 1; j < weights.length; j++) {
+                int sumI = sumDigits(weights[i]);
+                int sumJ = sumDigits(weights[j]);
+                if (sumI > sumJ || (sumI == sumJ && weights[i] > weights[j])) {
+                    int temp = weights[i];
+                    weights[i] = weights[j];
+                    weights[j] = temp;
+                }
+            }
+        }
+        
+        for (int w : weights) {
+            System.out.print(w + " ");
+        }
+        
+        scanner.close();
+    }
+    
+    public static int sumDigits(int n) {
+        int sum = 0;
+        while (n > 0) {
+            sum += n % 10;
+            n = n / 10;
+        }
+        return sum;
+    }
+}
