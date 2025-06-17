@@ -1,0 +1,25 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in, "UTF-8");
+        
+        System.out.println("Введите текст:");
+        String text = scanner.nextLine();
+        
+        String result = "";
+        
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (!isVowel(c)) {
+                result += c;
+            }
+        }
+        
+        System.out.println("Без гласных: " + result);
+    }
+    
+    public static boolean isVowel(char c) {
+        return "аеёиоуыэюяАЕЁИОУЫЭЮЯ".indexOf(c) != -1;
+    }
+}
