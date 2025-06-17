@@ -1,0 +1,23 @@
+import java.util.Scanner;
+
+public class SquareDifference {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Введите число n (0 < n < 100000):");
+        int n = scanner.nextInt();
+        
+        if (n <= 0 || n >= 100000) {
+            System.out.println("Число должно быть больше 0 и меньше 100000");
+            return;
+        }
+        
+        int k = (n - 1) / 2;
+        int square1 = k * k;
+        int square2 = (k + 1) * (k + 1);
+        
+        System.out.println(n + " = " + square2 + " - " + square1);
+        
+        scanner.close();
+    }
+}
