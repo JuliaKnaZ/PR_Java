@@ -1,0 +1,33 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Введите количество игроков: ");
+        int playerCount = scanner.nextInt();
+
+        System.out.print("Введите номер игрока, с которого начинается игра (от 1 до " + playerCount + "): ");
+        int start = scanner.nextInt();
+
+        List<Integer> players = new ArrayList<>();
+        for (int i = 1; i <= playerCount; i++) {
+            players.add(i);
+        }
+
+        List<Integer> result = new ArrayList<>();
+        System.out.println(players + " - initial sequence");
+
+        int index = start - 1;
+
+        while (!players.isEmpty()) {
+            index = (index + 2) % players.size();
+            int removed = players.remove(index);
+            result.add(removed);
+            System.out.println(players + " => " + removed + " is counted out and goes into the result " + result);
+            if (!players.isEmpty()) {
+                index = index % players.size();
+            }
+        }
+    }
+}
