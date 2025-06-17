@@ -1,0 +1,29 @@
+import java.util.Scanner;
+import java.util.regex.*;
+
+public class TextTransformer {
+    public static String transformText(String input) {
+        StringBuilder result = new StringBuilder();
+        Matcher matcher = Pattern.compile("[\\p{L}]+|[^\\p{L}]+").matcher(input);
+
+        while (matcher.find()) {
+            String token = matcher.group();
+            if (token.matches("[\\p{L}]+")) {
+                String transformed = token.substring(1) + token.charAt(0) + "ауч";
+                result.append(transformed);
+            } else {
+                result.append(token);
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите текст:");
+        String input = scanner.nextLine();
+        System.out.println("Результат:");
+        System.out.println(transformText(input));
+    }
+}
