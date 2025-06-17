@@ -1,0 +1,35 @@
+import java.util.Scanner;
+
+public class CaesarCipher {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Введите строку:");
+        String text = scanner.nextLine();
+        
+        System.out.println("Введите сдвиг (число):");
+        int shift = scanner.nextInt();
+        
+        System.out.println("Введите направление (1 - влево, 2 - вправо):");
+        int direction = scanner.nextInt();
+        
+        String result = "";
+        
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            
+            if (Character.isLetter(c)) {
+                char base = Character.isLowerCase(c) ? 'а' : 'Я';
+                if (direction == 2) {
+                    shift = -shift;
+                }
+                c = (char)(((c - base + shift + 26) % 26) + base);
+            }
+            result += c;
+        }
+        
+        System.out.println("Результат: " + result);
+        
+        scanner.close();
+    }
+}
