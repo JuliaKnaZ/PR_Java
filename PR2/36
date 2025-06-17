@@ -1,0 +1,80 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class CaesarDecryptor {
+
+    private static final String ALPHABET = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+
+    public static void main(String[] args) {
+        String referenceText = "А также предприниматели в сети интернет формируют глобальную экономическую сеть и при этом — функционально разнесены на независимые элементы. Задача организации, в особенности же дальнейшее развитие различных форм деятельности напрямую зависит от модели развития. Разнообразный и богатый опыт говорит нам, что семантический разбор внешних противодействий требует анализа существующих финансовых и административных условий. Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности однозначно определяет каждого участника как способного принимать собственные решения касаемо вывода текущих активов. Банальные, но неопровержимые выводы, а также ключевые особенности структуры проекта превращены в посмешище, хотя само их существование приносит несомненную пользу обществу! Прежде всего, постоянный количественный рост и сфера нашей активности напрямую зависит от переосмысления внешнеэкономических политик. В целом, конечно, базовый вектор развития обеспечивает актуальность направлений прогрессивного развития. Лишь некоторые особенности внутренней политики и по сей день остаются уделом либералов, которые жаждут быть объективно рассмотрены соответствующими инстанциями. С другой стороны, укрепление и развитие внутренней структуры однозначно фиксирует необходимость новых принципов формирования материально-технической и кадровой базы. Идейные соображения высшего порядка, а также семантический разбор внешних противодействий, а также свежий взгляд на привычные вещи — безусловно открывает новые горизонты для системы массового участия. В своём стремлении повысить качество жизни, они забывают, что постоянное информационно-пропагандистское обеспечение нашей деятельности, а также свежий взгляд на привычные вещи — безусловно открывает новые горизонты для новых принципов формирования материально-технической и кадровой базы. Прежде всего, постоянное информационно-пропагандистское обеспечение нашей деятельности однозначно фиксирует необходимость направлений прогрессивного развития. Картельные сговоры не допускают ситуации, при которой многие известные личности будут указаны как претенденты на роль ключевых факторов. Не следует, однако, забывать, что дальнейшее развитие различных форм деятельности создаёт предпосылки для распределения внутренних резервов и ресурсов. Являясь всего лишь частью общей картины, акционеры крупнейших компаний призваны к ответу.";
+
+        Map<Character, Double> referenceFreq = buildFrequencyMap(referenceText);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите зашифрованный текст:");
+        String encryptedText = scanner.nextLine().toUpperCase();
+        scanner.close();
+
+        int bestShift = findBestShift(encryptedText, referenceFreq);
+        String decrypted = decrypt(encryptedText, bestShift);
+
+        System.out.println("\nЛучший сдвиг: " + bestShift);
+        System.out.println("Расшифрованный текст:\n" + decrypted);
+    }
+
+    private static Map<Character, Double> buildFrequencyMap(String text) {
+        Map<Character, Integer> counts = new HashMap<>();
+        int total = 0;
+        for (char c : text.toUpperCase().toCharArray()) {
+            if (ALPHABET.indexOf(c) != -1) {
+                counts.put(c, counts.getOrDefault(c, 0) + 1);
+                total++;
+            }
+        }
+        Map<Character, Double> frequencies = new HashMap<>();
+        for (Map.Entry<Character, Integer> entry : counts.entrySet()) {
+            frequencies.put(entry.getKey(), entry.getValue() / (double) total);
+        }
+        return frequencies;
+    }
+
+    private static int findBestShift(String encryptedText, Map<Character, Double> referenceFreq) {
+        double bestScore = Double.NEGATIVE_INFINITY;
+        int bestShift = 0;
+        for (int shift = 0; shift < ALPHABET.length(); shift++) {
+            String decrypted = decrypt(encryptedText, shift);
+            Map<Character, Double> testFreq = buildFrequencyMap(decrypted);
+            double score = compareFrequencies(referenceFreq, testFreq);
+            if (score > bestScore) {
+                bestScore = score;
+                bestShift = shift;
+            }
+        }
+        return bestShift;
+    }
+
+    private static double compareFrequencies(Map<Character, Double> ref, Map<Character, Double> test) {
+        double score = 0.0;
+        for (char c : ALPHABET.toCharArray()) {
+            double f1 = ref.getOrDefault(c, 0.0);
+            double f2 = test.getOrDefault(c, 0.0);
+            score += f1 * f2;
+        }
+        return score;
+    }
+
+    private static String decrypt(String text, int shift) {
+        StringBuilder result = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            int index = ALPHABET.indexOf(c);
+            if (index != -1) {
+                int newIndex = (index - shift + ALPHABET.length()) % ALPHABET.length();
+                result.append(ALPHABET.charAt(newIndex));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+}
