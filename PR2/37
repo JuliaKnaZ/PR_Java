@@ -1,0 +1,76 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        GuessTheCodeGame.play();
+    }
+}
+
+class GuessTheCodeGame {
+
+    private static final int CODE_LENGTH = 4;
+    private static final int MAX_ATTEMPTS = 20;
+
+    public static void play() {
+        Scanner scanner = new Scanner(System.in);
+        int[] secretCode = generateSecretCode();
+        int attempts = 0;
+
+        System.out.println("Игра: Угадай 4-значный код.");
+        System.out.println("Вводите 4 числа от 0 до 9 через пробел. У вас есть 20 попыток.");
+
+        while (attempts < MAX_ATTEMPTS) {
+            System.out.print("Попытка " + (attempts + 1) + ": ");
+            int[] guess = new int[CODE_LENGTH];
+
+            for (int i = 0; i < CODE_LENGTH; i++) {
+                if (scanner.hasNextInt()) {
+                    guess[i] = scanner.nextInt();
+                } else {
+                    System.out.println("Неверный ввод. Введите 4 числа через пробел.");
+                    scanner.nextLine();
+                    i = -1;
+                }
+            }
+
+            int matches = countMatches(secretCode, guess);
+
+            if (matches == CODE_LENGTH) {
+                System.out.println("Поздравляем! Вы угадали код.");
+                return;
+            } else {
+                System.out.println("Совпавших чисел: " + matches);
+            }
+
+            attempts++;
+        }
+
+        System.out.println("Вы проиграли. Загаданный код был: " + Arrays.toString(secretCode));
+    }
+
+    private static int[] generateSecretCode() {
+        Random rand = new Random();
+        int[] code = new int[CODE_LENGTH];
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            code[i] = rand.nextInt(10);
+        }
+        return code;
+    }
+
+    private static int countMatches(int[] secret, int[] guess) {
+        int matches = 0;
+        int[] secretCount = new int[10];
+        int[] guessCount = new int[10];
+
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            secretCount[secret[i]]++;
+            guessCount[guess[i]]++;
+        }
+
+        for (int i = 0; i < 10; i++) {
+            matches += Math.min(secretCount[i], guessCount[i]);
+        }
+
+        return matches;
+    }
+}
