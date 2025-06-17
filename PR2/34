@@ -1,0 +1,25 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество палочек: ");
+        long n = scanner.nextLong();
+        long tanya = 0;
+        boolean tanyaTurn = true;
+
+        while (n > 0) {
+            long take = 1;
+            if (n % 2 == 0 && !tanyaTurn) {
+                take = n / 2;
+            }
+            if (tanyaTurn) {
+                tanya += take;
+            }
+            n -= take;
+            tanyaTurn = !tanyaTurn;
+        }
+        System.out.println("Таня собрала палочек: " + tanya);
+        scanner.close();
+    }
+}
