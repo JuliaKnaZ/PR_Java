@@ -1,0 +1,35 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество палочек: ");
+        long sticks = scanner.nextLong();
+
+        boolean turnSasha = true;
+
+        while (sticks > 0) {
+            System.out.print((turnSasha ? "Саша" : "Таня") + " берет ");
+
+            long taken = 1;
+            if (sticks % 2 == 0) {
+                if (sticks / 2 >= 1) {
+                    taken = sticks / 2;
+                }
+            }
+
+            System.out.println(taken + " палочку(ек).");
+            sticks -= taken;
+
+            turnSasha = !turnSasha;
+        }
+
+        if (!turnSasha) {
+            System.out.println("Саша победил!");
+        } else {
+            System.out.println("Таня победила!");
+        }
+
+        scanner.close();
+    }
+}
