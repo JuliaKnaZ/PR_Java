@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+public class PowerSumCheck {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Введите число a: ");
+        int a = scanner.nextInt();
+
+        System.out.print("Введите начальную степень w: ");
+        int w = scanner.nextInt();
+
+        String numStr = Integer.toString(a);
+        int sum = 0;
+
+        for (int i = 0; i < numStr.length(); i++) {
+            int digit = Character.getNumericValue(numStr.charAt(i));
+            int power = w + i;
+
+            int powered = 1;
+            for (int j = 0; j < power; j++) {
+                powered *= digit;
+            }
+
+            sum += powered;
+        }
+
+        System.out.println("Сумма степеней: " + sum);
+
+        if (sum % a == 0) {
+            int s = sum / a;
+
+            boolean isPowerOfTwoUpTo64 = false;
+            int[] powersOfTwo = {1, 2, 4, 8, 16, 32, 64};
+            for (int val : powersOfTwo) {
+                if (s == val) {
+                    isPowerOfTwoUpTo64 = true;
+                    break;
+                }
+            }
+
+            if (isPowerOfTwoUpTo64) {
+                System.out.println("Условие выполнено: " + sum + " = " + a + " * " + s);
+            } else {
+                System.out.println("Множитель s = " + s + " не является степенью двойки от 2^0 до 2^6.");
+            }
+        } else {
+            System.out.println("Сумма " + sum + " не делится на " + a + " без остатка.");
+        }
+
+        scanner.close();
+    }
+}
