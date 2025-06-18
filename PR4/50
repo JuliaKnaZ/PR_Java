@@ -1,0 +1,156 @@
+import java.io.*;
+import java.util.*;
+
+public class CalculatorWithHistory {
+    private static final String HISTORY_FILE = "calc_history.txt";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("История предыдущих вычислений:");
+        showHistory();
+
+        while (true) {
+            System.out.print("Введите выражение (или 'exit' для выхода): ");
+            String expression = scanner.nextLine();
+
+            if (expression.equalsIgnoreCase("exit")) break;
+
+            try {
+                double result = evaluate(expression);
+                String record = expression + " = " + result;
+                System.out.println(record);
+                saveToHistory(record);
+            } catch (Exception e) {
+                System.out.println("Ошибка: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void showHistory() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(HISTORY_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("История пуста или отсутствует.");
+        }
+    }
+
+    private static void saveToHistory(String record) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE, true))) {
+            writer.write(record);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Ошибка при сохранении истории.");
+        }
+    }
+
+    private static double evaluate(String expression) {
+        expression = expression.replaceAll("\\s+", "");
+        return parse(expression);
+    }
+
+    private static double parse(String expr) {
+        return evalExpr(new LinkedList<>(tokenize(expr)));
+    }
+
+    private static List<String> tokenize(String expr) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder num = new StringBuilder();
+        boolean unaryMinus = true;
+
+        for (int i = 0; i < expr.length(); i++) {
+            char ch = expr.charAt(i);
+
+            if (Character.isDigit(ch) || ch == '.') {
+                num.append(ch);
+                unaryMinus = false;
+            } else {
+                if (num.length() > 0) {
+                    tokens.add(num.toString());
+                    num.setLength(0);
+                }
+
+                if (ch == '-' && unaryMinus) {
+                    num.append(ch);
+                    continue;
+                }
+
+                if (ch == '/' && i + 1 < expr.length() && expr.charAt(i + 1) == '/') {
+                    tokens.add("//");
+                    i++;
+                } else if (ch == '|') {
+                    tokens.add("|");
+                } else {
+                    tokens.add(String.valueOf(ch));
+                }
+
+                unaryMinus = true;
+            }
+        }
+
+        if (num.length() > 0) {
+            tokens.add(num.toString());
+        }
+
+        return tokens;
+    }
+
+    private static double evalExpr(Queue<String> tokens) {
+        Stack<Double> values = new Stack<>();
+        Stack<String> ops = new Stack<>();
+
+        while (!tokens.isEmpty()) {
+            String token = tokens.poll();
+
+            if (token.matches("-?\\d+(\\.\\d+)?")) {
+                values.push(Double.parseDouble(token));
+            } else if (token.equals("(")) {
+                values.push(evalExpr(tokens));
+            } else if (token.equals(")")) {
+                break;
+            } else if (token.equals("|")) {
+                double val = evalExpr(tokens);
+                values.push(Math.abs(val));
+                tokens.poll(); 
+            } else {
+                while (!ops.isEmpty() && precedence(ops.peek()) >= precedence(token)) {
+                    applyOperator(ops.pop(), values);
+                }
+                ops.push(token);
+            }
+        }
+
+        while (!ops.isEmpty()) {
+            applyOperator(ops.pop(), values);
+        }
+
+        return values.pop();
+    }
+
+    private static void applyOperator(String op, Stack<Double> values) {
+        double b = values.pop();
+        double a = values.pop();
+
+        switch (op) {
+            case "+" -> values.push(a + b);
+            case "-" -> values.push(a - b);
+            case "*" -> values.push(a * b);
+            case "/" -> values.push(a / b);
+            case "//" -> values.push((double) (int) (a / b));
+            case "%" -> values.push(a % b);
+            case "^" -> values.push(Math.pow(a, b));
+            default -> throw new IllegalArgumentException("Неизвестный оператор: " + op);
+        }
+    }
+
+    private static int precedence(String op) {
+        return switch (op) {
+            case "^" -> 4;
+            case "*", "/", "//", "%" -> 3;
+            case "+", "-" -> 2;
+            default -> 1;
+        };
+    }
+}
