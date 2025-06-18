@@ -1,0 +1,13 @@
+public static int compute(int n) {
+    int first = 0, second = 1;
+    while (n > 0) {
+        if (n % 2 == 0) {
+            n /= 2;
+            second += first;
+        } else {
+            n = (n - 1) / 2;
+            first += second;
+        }
+    }
+    return first;
+}
