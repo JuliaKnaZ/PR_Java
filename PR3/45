@@ -1,0 +1,32 @@
+import java.util.Scanner;
+
+public class ArabicToRomanConverter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество лет (от 2 до 9999): ");
+        int arabicNumber = scanner.nextInt();
+        
+        if (arabicNumber <= 1 || arabicNumber >= 10000) {
+            System.out.println("Ошибка: число должно быть в диапазоне от 2 до 9999");
+        } else {
+            String romanNumber = convertToRoman(arabicNumber);
+            System.out.println("Римское представление: " + romanNumber);
+        }
+    }
+    
+    public static String convertToRoman(int num) {
+        String[] thousands = {"", "M", "MM", "MMM", "MMMM", "MMMMM", 
+                             "MMMMMM", "MMMMMMM", "MMMMMMMM", "MMMMMMMMM"};
+        String[] hundreds = {"", "C", "CC", "CCC", "CD", "D", 
+                            "DC", "DCC", "DCCC", "CM"};
+        String[] tens = {"", "X", "XX", "XXX", "XL", "L", 
+                         "LX", "LXX", "LXXX", "XC"};
+        String[] ones = {"", "I", "II", "III", "IV", "V", 
+                         "VI", "VII", "VIII", "IX"};
+        
+        return thousands[num / 1000] + 
+               hundreds[(num % 1000) / 100] + 
+               tens[(num % 100) / 10] + 
+               ones[num % 10];
+    }
+}
