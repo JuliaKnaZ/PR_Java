@@ -1,0 +1,97 @@
+import java.util.*;
+
+public class SnakeSort {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество чисел N: ");
+        int N = scanner.nextInt();
+        
+        List<Integer> numbers = generateSortedNumbers(N);
+        System.out.println("Отсортированные числа: " + numbers);
+        
+        int size = (int) Math.ceil(Math.sqrt(N));
+        int[][] matrix = createSquareMatrix(numbers, size);
+        System.out.println("\nСформированная матрица:");
+        printMatrix(matrix);
+        
+        List<Integer> result = snailSort(matrix);
+        System.out.println("\nРезультат сортировки змейкой:");
+        System.out.println(result);
+    }
+    
+    private static List<Integer> generateSortedNumbers(int count) {
+        List<Integer> numbers = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < count; i++) {
+            numbers.add(random.nextInt(100));  
+        }
+        Collections.sort(numbers);
+        return numbers;
+    }
+    
+    private static int[][] createSquareMatrix(List<Integer> numbers, int size) {
+        int[][] matrix = new int[size][size];
+        int index = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (index < numbers.size()) {
+                    matrix[i][j] = numbers.get(index++);
+                } else {
+                    matrix[i][j] = 0;  
+                }
+            }
+        }
+        return matrix;
+    }
+    
+    // Алгоритм сортировки змейкой
+    public static List<Integer> snailSort(int[][] matrix) {
+        List<Integer> result = new ArrayList<>();
+        if (matrix == null || matrix.length == 0) return result;
+        
+        int top = 0, bottom = matrix.length - 1;
+        int left = 0, right = matrix[0].length - 1;
+        
+        while (top <= bottom && left <= right) {
+            // Движение вправо
+            for (int i = left; i <= right; i++) {
+                result.add(matrix[top][i]);
+            }
+            top++;
+            
+            // Движение вниз
+            for (int i = top; i <= bottom; i++) {
+                result.add(matrix[i][right]);
+            }
+            right--;
+            
+            // Движение влево (если есть строки)
+            if (top <= bottom) {
+                for (int i = right; i >= left; i--) {
+                    result.add(matrix[bottom][i]);
+                }
+                bottom--;
+            }
+            
+            // Движение вверх 
+            if (left <= right) {
+                for (int i = bottom; i >= top; i--) {
+                    result.add(matrix[i][left]);
+                }
+                left++;
+            }
+        }
+        
+        return result;
+    }
+    
+    private static void printMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            for (int num : row) {
+                System.out.printf("%3d ", num);
+            }
+            System.out.println();
+        }
+    }
+}
